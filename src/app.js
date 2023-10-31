@@ -8,6 +8,8 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import ChatManager from "./dao/dbManager/chat.manager.js";
 const chatManager= new ChatManager();
+import ProductManager from "./dao/dbManager/products.manager.js";
+const productManager= new ProductManager();
 
 const app = express ();
 
@@ -46,4 +48,5 @@ io.on("connection",async(socket) =>{
     const newMessage = await chatManager.getAll();
     io.emit("messageLogs",newMessage) //envío a todos lo que hay almacenado.
 })
+
 })
