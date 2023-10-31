@@ -30,18 +30,20 @@ const server= app.listen(8080, ()=>console.log("Server running"));
 const io = new Server(server);
 app.set("socketio",io);
 
-const messages = [];
+//const messages = [];
 
-io.on("connection",socket =>{
-   // const messages2 = await chatManager.getAll();
+io.on("connection",async(socket) =>{
+    const messages = await chatManager.getAll();
     console.log("Nuevo cliente conectado");
 //lee el evento authenticated; el frontend es index.js. Leemos la data (lo que envío desde index.js)
     socket.on("authenticated",data=>{
     socket.emit("messageLogs",messages); //Enviamos todos los mensajes hasta el momento, únicamnete a quien se acaba de conectar.
 });
 //lee el evento message
-    socket.on("message",data=>{
-    messages.push(data);
-    io.emit("messageLogs",messages) //envío a todos lo que hay almacenado.
+    socket.on("message",async(data)=>{
+    //messages.push(data);
+    await chatManager.save(data);
+    const newMessage = await chatManager.getAll();
+    io.emit("messageLogs",newMessage) //envío a todos lo que hay almacenado.
 })
 })

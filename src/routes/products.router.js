@@ -70,7 +70,7 @@ router.delete("/:pid", async (req,res)=>{
     const result = await productManager.delete(pid);
     const io = req.app.get('socketio');
     const products=await productManager.getAll();
-    io.emit("showProducts", {products:products});
+    io.emit("showProducts", {products:await productManager.getAll()});
     res.status(201).send({status:"success",payload:result});
     }
     catch(error) {
